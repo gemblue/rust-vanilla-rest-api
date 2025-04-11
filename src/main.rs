@@ -157,7 +157,14 @@ fn handle_connection(mut stream: TcpStream, db: &Connection) -> Result<()> {
         
         respond_json(&mut stream, body);
     
+    } else {
+        
+        let body = r#"{"message":"404 Not Found."}"#;
+        
+        respond_json(&mut stream, body);
     }
+
+    Ok(())
 }
 
 fn respond_json(stream: &mut TcpStream, body: &str) {
