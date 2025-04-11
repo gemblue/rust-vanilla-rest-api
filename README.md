@@ -53,7 +53,7 @@ Latihan membangun REST API **tanpa framework** menggunakan Rust. Proyek ini bert
 | GET    | `/get`         | Get semua todo       |
 | POST   | `/insert`      | Tambah todo baru     |
 | PUT    | `/update`      | Update todo by id    |
-| DELETE | `/todos/{id}`  | Hapus todo by id     |
+| DELETE | `/delete/{id}` | Hapus todo by id     |
 
 Saya sudah buatkan Postman Collection, tinggal gunakan saja, unduh disini
 https://drive.google.com/file/d/1qyv_kE1s67DNqK_Sz3rp_oJiqP31sK9_/view?usp=sharing
