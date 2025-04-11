@@ -149,6 +149,14 @@ fn handle_connection(mut stream: TcpStream, db: &Connection) -> Result<()> {
         
         respond_json(&mut stream, r#"{"status":"Updated"}"#);
     
+    } else if request.starts_with("GET /wipe") {
+        
+        db.execute("DELETE FROM todos WHERE 1=1;", [])?;
+        
+        let body = r#"{"message":"Todo Wiped."}"#;
+        
+        respond_json(&mut stream, body);
+    
     }
 }
 
