@@ -30,8 +30,8 @@ Latihan membangun REST API **tanpa framework** menggunakan Rust. Proyek ini bert
 1. Clone repositori ini
 
    ```bash
-   git clone https://github.com/username/rust-vanilla-rest-api.git
-   cd rust-native-rest-api
+   git clone https://github.com/gemblue/rust-vanilla-rest-api.git
+   cd rust-vanilla-rest-api
    ```
 
 2. Jalankan Server
@@ -40,10 +40,10 @@ Latihan membangun REST API **tanpa framework** menggunakan Rust. Proyek ini bert
    cargo run
    ```
 
-3. Uji endpoint menggunakan Postman / curl:
+3. Uji endpoint menggunakan Postman / Curl:
 
    ```bash
-   curl -X GET http://localhost:7878/todos
+   curl -X GET http://localhost:8080/get
    ```
 
 ## 📬 Contoh Endpoint
