@@ -115,6 +115,40 @@ fn handle_connection(mut stream: TcpStream, db: &Connection) -> Result<()> {
             respond_json(&mut stream, r#"{"status":"Deleted"}"#);
         }
 
+    } else if request.starts_with("PUT /update") {
+
+        // Hitung Content-Length dari header
+        let content_length = request
+            .lines()
+            .find(|line| line.to_lowercase().starts_with("content-length"))
+            .and_then(|line| line.split(':').nth(1))
+            .and_then(|val| val.trim().parse::<usize>().ok())
+            .unwrap_or(0);
+
+        // Cari posisi awal body
+        let body_start = request.find("\r\n\r\n").unwrap() + 4;
+
+        // Ngambil body sesuai content-length
+        let body_bytes = &buffer[body_start..body_start + content_length];
+        let body_str = std::str::from_utf8(body_bytes).unwrap_or("");
+
+        println!("Body: {}", body_str); // Debug
+
+        // Parse JSON dari body
+        let todo: Todo = match serde_json::from_str(body_str) {
+            Ok(data) => data,
+            Err(e) => {
+                eprintln!("JSON error: {:?}", e);
+                respond_json(&mut stream, r#"{"error":"Invalid JSON"}"#);
+                return Ok(());
+            }
+        };
+
+        // Insert ke database
+        db.execute("UPDATE todos SET title = ?1 WHERE id = ?2;", params![todo.title, todo.id])?;
+        
+        respond_json(&mut stream, r#"{"status":"Updated"}"#);
+    
     }
 }
 
