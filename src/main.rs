@@ -90,6 +90,31 @@ fn handle_connection(mut stream: TcpStream, db: &Connection) -> Result<()> {
 
         respond_json(&mut stream, r#"{"status":"Inserted"}"#);
 
+    } else if request.starts_with("DELETE /delete") {
+
+        // Ekstrak ID dari path URL
+        let path = request.lines().next().unwrap(); // Misal: DELETE /delete/3 HTTP/1.1
+        let parts: Vec<&str> = path.split_whitespace().collect();
+        let url = parts[1]; // "/delete/3"
+
+        let id_str = url.trim_start_matches("/delete/");
+        let id: i64 = match id_str.parse() {
+            Ok(val) => val,
+            Err(_) => {
+                respond_json(&mut stream, r#"{"error":"Invalid ID"}"#);
+                return Ok(());
+            }
+        };
+
+        // Delete berdasarkan ID
+        let affected = db.execute("DELETE FROM todos WHERE id = ?1;", params![id])?;
+
+        if affected == 0 {
+            respond_json(&mut stream, r#"{"status":"Not Found"}"#);
+        } else {
+            respond_json(&mut stream, r#"{"status":"Deleted"}"#);
+        }
+
     }
 }
 
