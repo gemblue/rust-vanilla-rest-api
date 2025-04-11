@@ -30,5 +30,40 @@ fn main() -> Result<()> {
 }
 
 fn handle_connection(mut stream: TcpStream, db: &Connection) -> Result<()> {
+    let mut buffer = [0; 1024];
+    stream.read(&mut buffer).unwrap();
 
+    let request = String::from_utf8_lossy(&buffer[..]);
+
+    if request.starts_with("GET /get") {
+        
+        let mut stmt = db.prepare("SELECT id, title FROM todos")?;
+
+        let todos_iter = stmt.query_map([], |row| {
+            Ok(Todo {
+                id: row.get(0)?,
+                title: row.get(1)?,
+            })
+        })?;
+
+        let mut todos = Vec::new();
+
+        for todo in todos_iter {
+            todos.push(todo?);
+        }
+
+        let body = serde_json::to_string(&todos).unwrap();
+        
+        respond_json(&mut stream, &body);
+    
+    }
+}
+
+fn respond_json(stream: &mut TcpStream, body: &str) {
+    let response = format!(
+        "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: {}\r\n\r\n{}",
+        body.len(),
+        body
+    );
+    stream.write_all(response.as_bytes()).unwrap();
 }
