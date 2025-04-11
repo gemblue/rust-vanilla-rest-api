@@ -1,4 +1,4 @@
-# 🦀 Rust Native REST API
+# 🦀 Rust Vanilla REST API
 
 Latihan membangun REST API **tanpa framework** menggunakan Rust. Proyek ini bertujuan untuk memahami cara kerja HTTP dari nol, langsung dengan `TcpListener`, `serde`, dan `sqlite` untuk penyimpanan data.
 
